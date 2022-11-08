@@ -1,0 +1,16 @@
+domain: golearning.dev
+layout:
+- go.kubebuilder.io/v3
+projectName: kubebuilder-kluster
+repo: github.com/vikas-gautam/kubebuilder-kluster
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: golearning.dev
+  group: demo
+  kind: Kluster
+  path: github.com/vikas-gautam/kubebuilder-kluster/api/v1alpha1
+  version: v1alpha1
+version: "3"
