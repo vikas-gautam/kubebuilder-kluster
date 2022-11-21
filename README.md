@@ -14,3 +14,21 @@ https://book.kubebuilder.io/quick-start.html
 # modify controller to write your business logic
 
 ```
+
+
+IMP points -
+
+CR - action on CR resource like status update with field addition
+in above case we need custom k8s client - klient klientset.Interface
+
+OR
+
+client.Client from "sigs.k8s.io/controller-runtime/pkg/client" [Controller-runtime has in built function to get kubeconfig -  ctrl.GetConfigOrDie() and creating newmanager ctrl.NewManager()]
+it's similar to kubectl command
+-------------
+
+But, for native resorces we could use k8sclient kubernetes.Interface or *kuberenetes.clientset from client-go/kuberentes package
+
+--------------
+one client we use in controller and one we use in utils folders
+---------------------------------------------------------------------------

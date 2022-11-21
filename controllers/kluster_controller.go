@@ -60,15 +60,38 @@ func (r *KlusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	r.Get(ctx, types.NamespacedName{Name: req.Name, Namespace: req.Namespace}, kluster)
 	l.Info("Enter Reconcile", "klusterSpec", kluster.Spec, "klusterStatus", kluster.Status)
 
-	doClusterID, err := doutils.Createk8sCluster(kluster.Spec)
+	//check if object/resource has finalizer (deletetimestamp), after removal only u could delete object
+
+	if err := doutils.HandleKlusterFinalizer(kluster, r.Client); err != nil {
+		return ctrl.Result{}, err
+	}
+
+	//add finalizer to new CR, it will update resource and that will be a new trigger to reconciler
+	if err := doutils.AddKlusterFinalizer(kluster, r.Client); err != nil {
+		return ctrl.Result{}, err
+	}
+
+	//Beofore DO cluster creation, we will cross check the cluster.spec with DO APIs
+
+	//create DO cluster
+	doClusterID, err := doutils.Createk8sCluster(r.Client, kluster)
 	if err != nil {
 		l.Error(err, "Error while creating DO cluster")
 		return ctrl.Result{}, err
 	}
 	l.Info("DO cluster id", "id", doClusterID)
 
+	// //deleting k8s cluster from DO
+	// err := doutils.Deletek8sCluster(c.k8sclient, "default/dosecret", name)
+	// if err != nil {
+	// 	l.Error(err, "Error while deleting DO cluster")
+	// 	return ctrl.Result{}, err
+	// }
+	// l.Info("deleted cluster from DO: ", name)
+
 	l.Info("Will reconcile redis operator in again 10 seconds")
 	return ctrl.Result{RequeueAfter: time.Second * 10}, nil
+	//return ctrl.Result{}, nil
 }
 
 // SetupWithManager sets up the controller with the Manager.

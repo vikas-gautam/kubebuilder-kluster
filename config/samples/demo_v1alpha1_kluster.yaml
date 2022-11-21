@@ -7,11 +7,11 @@ metadata:
     app.kubernetes.io/part-of: kubebuilder-kluster
     app.kuberentes.io/managed-by: kustomize
     app.kubernetes.io/created-by: kubebuilder-kluster
-  name: kluster-sample
+  name: kluster-sample-1
 spec:
-  name: kluster-sample
+  name: kluster-sample-1
   region: "blr1"
-  version: "1.22.13-do.0"
+  version: "1.23.10-do.0"
   tokenSecret: "default/dosecret"
   nodePools:
     - count: 1
